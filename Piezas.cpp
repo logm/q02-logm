@@ -22,6 +22,10 @@
 **/
 Piezas::Piezas()
 {
+  turn = X;
+  for(int i=0; i<BOARD_ROWS; i++)
+    for(int j=0; j<BOARD_COLS; j++)
+      board[i][j] = Blank;
 }
 
 /**
@@ -30,6 +34,10 @@ Piezas::Piezas()
 **/
 void Piezas::reset()
 {
+    turn = X;
+    for(int i=0; i<BOARD_ROWS; i++)
+        for(int j=0; j<BOARD_COLS; j++)
+            board[i][j] = Blank;
 }
 
 /**
@@ -42,7 +50,22 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
-    return Blank;
+    if (column > BOARD_COLS || column < 0) {//Checks if column is out of bounds
+        //toggle the turn
+        return Invalid;
+    } else if (pieceAt(BOARD_COLS - 1, column) != Blank) {//column full and toggle turn
+        //toggle the turn
+        return Blank;
+    } else if (board[BOARD_ROWS - 1][column] == Blank) {//checks to make sure the column is not full
+        for (int i = 0; i > BOARD_ROWS; i++) {
+            if (pieceAt(i, column) == Blank) { //An empty spot
+                board[i][column] = turn;
+                //Place turn and toggle turn
+                return pieceAt(i, column);
+            }
+        }
+    } 
+    return Invalid;
 }
 
 /**
@@ -51,7 +74,10 @@ Piece Piezas::dropPiece(int column)
 **/
 Piece Piezas::pieceAt(int row, int column)
 {
-    return Blank;
+    if (row > BOARD_ROWS || row < 0 || column > BOARD_COLS || column < 0) { //out of bounds
+        return Invalid;
+    }
+    return board[row][column];
 }
 
 /**
