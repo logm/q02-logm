@@ -172,9 +172,18 @@ Piece Piezas::gameState()
     for (int i = 0; i < BOARD_COLS; i++) {
         //Three streak
         if (pieceAt(0,i) == pieceAt(1,i) && pieceAt(1,i) == pieceAt(2,i)) {
-            if ()
+            if (pieceAt(1,i) == X && xBiggestStreak < 3) {
+                xBiggestStreak = 3;
+            } else if (pieceAt(1,i) == O && oBiggestStreak < 3) {
+                oBiggestStreak = 3;
+            }
+        } else if (pieceAt(0,i) == pieceAt(1,i) || pieceAt(1,i) == pieceAt(2,i)) {//Two streak
+            if (pieceAt(1,i) == X && xBiggestStreak < 3) {
+                xBiggestStreak = 2;
+            } else if (pieceAt(1,i) == O && oBiggestStreak < 3) {
+                oBiggestStreak = 2;
+            }
         }
-        //Two streak
     }
     
     //cout<<"xBiggestStreak "<<xBiggestStreak<<endl;
