@@ -18,6 +18,24 @@ TEST(PiezasTest, sanityCheck)
 {
 	ASSERT_TRUE(true);
 }
+//Testing for reset()
+TEST(PiezasTest, reset) {
+	Piezas pi;
+	pi.dropPiece(0);//X
+	pi.dropPiece(1);//O
+	pi.dropPiece(0);//X
+	pi.dropPiece(1);//O
+	pi.dropPiece(2);//X
+	pi.dropPiece(1);//O
+	pi.dropPiece(3);//X
+	pi.dropPiece(0);//O
+	pi.dropPiece(3);//X
+	pi.dropPiece(2);//O
+	pi.dropPiece(2);//X
+	pi.reset();
+	ASSERT_EQ(Blank, pi.pieceAt(1,1));
+}
+
 
 //Testing for dropPiece()
 TEST(PiezasTest, correctDropX) {
@@ -76,7 +94,7 @@ TEST(PiezasTest, gameNotDone) {
 	ASSERT_EQ(Invalid, pi.gameState());
 }
 
-TEST(PiezasTest, fourStreakWinner) {
+TEST(PiezasTest, fourStreakWinnerRows) {
 	Piezas pi;
 	pi.dropPiece(0);//X
 	pi.dropPiece(0);//O
@@ -108,4 +126,21 @@ TEST(PiezasTest, tie) {
 	pi.dropPiece(1);//X
 	pi.dropPiece(3);//O
 	ASSERT_EQ(Blank, pi.gameState());
+}
+
+TEST(PiezasTest, threeStreakWinnerCOl) {
+	Piezas pi;
+	pi.dropPiece(0);//X
+	pi.dropPiece(1);//O
+	pi.dropPiece(0);//X
+	pi.dropPiece(1);//O
+	pi.dropPiece(2);//X
+	pi.dropPiece(1);//O
+	pi.dropPiece(3);//X
+	pi.dropPiece(0);//O
+	pi.dropPiece(3);//X
+	pi.dropPiece(2);//O
+	pi.dropPiece(2);//X
+	pi.dropPiece(3);//O
+	ASSERT_EQ(O, pi.gameState());
 }
