@@ -1,5 +1,8 @@
 #include "Piezas.h"
 #include <vector>
+#include <iostream>
+using namespace std;
+
 /** CLASS Piezas
  * Class for representing a Piezas vertical board, which is roughly based
  * on the game "Connect Four" where pieces are placed in a column and 
@@ -22,10 +25,14 @@
 **/
 Piezas::Piezas()
 {
-  turn = X;
-  for(int i=0; i<BOARD_ROWS; i++)
-    for(int j=0; j<BOARD_COLS; j++)
-      board[i][j] = Blank;
+    turn = X;
+    board.resize(BOARD_ROWS);
+    for(int i=0; i<BOARD_ROWS; i++) {
+        board[i].resize(BOARD_COLS);
+        for(int j=0; j<BOARD_COLS; j++) {
+            board[i][j] = Blank;
+        }
+    }
 }
 
 /**
@@ -50,21 +57,36 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
-    if (column > BOARD_COLS || column < 0) {//Checks if column is out of bounds
+    if (column >= BOARD_COLS || column < 0) {//Checks if column is out of bounds
         //toggle the turn
+        if (turn == X) {
+            turn = O;
+        } else  if (turn == O) {
+            turn = X;
+        }
         return Invalid;
-    } else if (pieceAt(BOARD_COLS - 1, column) != Blank) {//column full and toggle turn
+    } else if (pieceAt(BOARD_ROWS - 1, column) != Blank) {//column full and toggle turn
         //toggle the turn
+        if (turn == X) {
+            turn = O;
+        } else  if (turn == O) {
+            turn = X;
+        }
         return Blank;
-    } else if (board[BOARD_ROWS - 1][column] == Blank) {//checks to make sure the column is not full
-        for (int i = 0; i > BOARD_ROWS; i++) {
+    } else if (pieceAt(BOARD_ROWS-1, column) == Blank) {//checks to make sure the column is not full
+        for (int i = 0; i < BOARD_ROWS; i++) {
             if (pieceAt(i, column) == Blank) { //An empty spot
-                board[i][column] = turn;
                 //Place turn and toggle turn
+                board[i][column] = turn;
+                if (turn == X) {
+                    turn = O;
+                } else  if (turn == O) {
+                    turn = X;
+                }
                 return pieceAt(i, column);
             }
         }
-    } 
+    }
     return Invalid;
 }
 
@@ -99,38 +121,65 @@ Piece Piezas::gameState()
 {
     //invalid if board is not full - return invalid
     if (pieceAt(2,0) == Blank || pieceAt(2,1) == Blank || pieceAt(2,2) == Blank || pieceAt(2,3) == Blank) { //Top row is not full thus gameboard is not full
+        //cout<<"gameboard is not full"<<endl;
         return Invalid;
     } 
-    //winner - return winner
+    //cout<<"game board is full"<<endl;
     int xBiggestStreak = 0;
     int oBiggestStreak = 0;
+    
     //rows
-    for (int i = 0; i > BOARD_ROWS; i++) {
+    for (int i = 0; i < BOARD_ROWS; i++) {
+        //cout<<"i "<<i<<endl;
         if (pieceAt(i,0) == pieceAt(i,1) && pieceAt(i,1) == pieceAt(i,2) && pieceAt(i,2) == pieceAt(i,3)) {//4 streak
-            if (pieceAt(i,0) == X) {
+            //cout<<"four streak"<<endl;
+            if (pieceAt(i,0) == X && xBiggestStreak < 4) {
                 xBiggestStreak = 4;
-            } else if (pieceAt(i,0) == O) {
+            } else if (pieceAt(i,0) && oBiggestStreak < 4) {
                 oBiggestStreak = 4;
             }
         } else if ( //3 streak
             (pieceAt(i,0) == pieceAt(i,1) && pieceAt(i,1) == pieceAt(i,2)) || //left 3 columns
             (pieceAt(i,1) == pieceAt(i,2) && pieceAt(i,2) == pieceAt(i,3))  //right 3 columns
         ) {
-            if (pieceAt(i,0) == X) {
+            //cout<<"3 streak"<<endl;
+            if (pieceAt(i,1) == X && xBiggestStreak < 3) {
                 xBiggestStreak = 3;
-            } else if (pieceAt(i,0) == O) {
+            } else if (pieceAt(i,1) == O && oBiggestStreak < 3) {
                 oBiggestStreak = 3;
             }
         } else if ( //2 streak
             (pieceAt(i, 0) == pieceAt(i, 1)) ||   //first columns
-            (pieceAt(i, 1) == pieceAt(i, 2)) ||   //middle columns
-            (pieceAt(i, 2) == pieceAt(i, 3))      //last 2 columns
-        ) {
-                return X;
+            (pieceAt(i, 1) == pieceAt(i, 2))   //middle columns
+        ) { 
+            //cout<<"two streak"<<endl;
+            if (pieceAt(i,1) == X && xBiggestStreak < 2) {
+                xBiggestStreak = 2;
+            } else if (pieceAt(i,1) == O && oBiggestStreak < 2) {
+                oBiggestStreak = 2;
+            }  
+        } else if (pieceAt(i, 2) == pieceAt(i, 3))      //last 2 columns 
+        {
+            //cout<<"two streak"<<endl;
+            if (pieceAt(i,2) == X && xBiggestStreak < 2) {
+                xBiggestStreak = 2;
+            } else if (pieceAt(i,2) == O && oBiggestStreak < 2) {
+                oBiggestStreak = 2;
+            } 
         }
     }
-    
     //columns
+    for (int i = 0; i < BOARD_COLS; i++) {
+        //Three streak
+        if (pieceAt(0,i) == pieceAt(1,i) && pieceAt(1,i) == pieceAt(2,i)) {
+            if ()
+        }
+        //Two streak
+    }
+    
+    //cout<<"xBiggestStreak "<<xBiggestStreak<<endl;
+    //cout<<"oBiggestStreak "<<oBiggestStreak<<endl;
+    //Return largest streak
     if (xBiggestStreak > oBiggestStreak) {
         return X;
     } else if (xBiggestStreak < oBiggestStreak) {
@@ -138,11 +187,5 @@ Piece Piezas::gameState()
     } else { 
         return Blank;
     }
-    /**
-    for (int i = 0; i < BOARD_ROWS; i++) {
-        for (int j = 0; j < BOARD_COLS; j++) {
-        }
-    }**/
-    //tie no one has won - return blank
-    return Blank;
+    return Blank;   
 }
